@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppTester.FolderSelectionPage">
+
+    <StackLayout Padding="10">
+
+        <Label Text="Select a Folder" FontAttributes="Bold" FontSize="Medium" />
+
+        <ListView x:Name="FolderListView" ItemSelected="OnFolderSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackLayout Orientation="Horizontal" Margin="0,20,0,0" HorizontalOptions="CenterAndExpand">
+            <Button Text="OK" Clicked="OnOkButtonClick"/>
+            <Button Text="Cancel" Clicked="OnCancelButtonClick"/>
+        </StackLayout>
+
+    </StackLayout>
+
+</ContentPage>

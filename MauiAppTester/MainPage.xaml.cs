@@ -1,17 +1,44 @@
-﻿using Microsoft.Maui.Controls;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Maui.ApplicationModel;
-
-namespace MauiAppTester
+﻿namespace MauiAppTester
 {
     public partial class MainPage : ContentPage
     {
         public MainPage()
         {
             InitializeComponent();
+            CreateMockDirectoriesAndFiles(); // Create mock directories and files for testing
+        }
+
+        private void CreateMockDirectoriesAndFiles()
+        {
+            string rootPath = "/storage/emulated/0/MockTest";
+            string[] directories = {
+        Path.Combine(rootPath, "Folder1"),
+        Path.Combine(rootPath, "Folder2"),
+        Path.Combine(rootPath, "Folder3")
+    };
+
+            string[] files = {
+        Path.Combine(directories[0], "file1.txt"),
+        Path.Combine(directories[0], "file2.txt"),
+        Path.Combine(directories[1], "file3.txt"),
+        Path.Combine(directories[2], "file4.txt")
+    };
+
+            foreach (var dir in directories)
+            {
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+            }
+
+            foreach (var file in files)
+            {
+                if (!File.Exists(file))
+                {
+                    File.WriteAllText(file, "This is a test file.");
+                }
+            }
         }
 
         private void OnSimulateButtonClick(object sender, EventArgs e)
@@ -63,6 +90,11 @@ namespace MauiAppTester
         {
             string inputText = TextInput.Text;
             DisplayAlert("You Typed:", inputText, "OK");
+        }
+
+        private async void OnOpenDeviceFoldersClick(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new FolderSelectionPage());
         }
     }
 }
