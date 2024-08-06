@@ -58,5 +58,11 @@ namespace MauiAppTester
                 "file3.txt"
             };
         }
+
+        private void OnSendButtonClick(object sender, EventArgs e)
+        {
+            string inputText = TextInput.Text;
+            DisplayAlert("You Typed:", inputText, "OK");
+        }
     }
 }
