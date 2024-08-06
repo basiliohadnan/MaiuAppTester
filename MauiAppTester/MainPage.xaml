@@ -3,10 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppTester.MainPage">
 
-    <StackLayout Padding="10">
-        <Button Text="Simulate Button Click" Clicked="OnSimulateButtonClick" />
-        <Button Text="Open Device Folder" Clicked="OnOpenDeviceFolderClick" />
+    <StackLayout Padding="30">
+
+        <!-- Existing Buttons -->
+        <Button Text="Simulate Button Click" Clicked="OnSimulateButtonClick"/>
+        <Button Text="Open Device Folder" Clicked="OnOpenDeviceFolderClick"/>
+
+        <!-- Text Input and Send Button -->
+        <StackLayout Orientation="Horizontal" Margin="0,20,0,0">
+            <Entry x:Name="TextInput" Placeholder="Type something..." HorizontalOptions="FillAndExpand"/>
+            <Button Text="Send" Clicked="OnSendButtonClick"/>
+        </StackLayout>
+
     </StackLayout>
 
 </ContentPage>
-    
