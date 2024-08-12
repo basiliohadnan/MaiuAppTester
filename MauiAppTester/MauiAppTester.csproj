@@ -63,9 +63,5 @@
 		<PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.71" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <MauiXaml Update="FolderSelectionPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
+	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionMauiAppTesterHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 </Project>
