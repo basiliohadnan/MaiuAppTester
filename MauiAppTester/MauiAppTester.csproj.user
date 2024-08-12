@@ -8,11 +8,6 @@
     <DefaultDevice>pixel_5_-_api_30</DefaultDevice>
   </PropertyGroup>
   <ItemGroup>
-    <MauiXaml Update="FolderSelectionPage.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="App.xaml">
       <SubType>Designer</SubType>
     </None>
