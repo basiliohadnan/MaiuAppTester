@@ -1,100 +1,107 @@
-﻿namespace MauiAppTester
+﻿using Microsoft.Maui.Controls;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
+
+namespace MauiAppTester
 {
     public partial class MainPage : ContentPage
     {
+        private string selectedFolder;
+        private string currentPath;
+
         public MainPage()
         {
             InitializeComponent();
-            CreateMockDirectoriesAndFiles(); // Create mock directories and files for testing
+            currentPath = "/storage/emulated/0/"; // Start from root directory
+            CheckAndRequestPermissionsAsync(); // Check and request permissions
         }
 
-        private void CreateMockDirectoriesAndFiles()
+        private async void CheckAndRequestPermissionsAsync()
         {
-            string rootPath = "/storage/emulated/0/MockTest";
-            string[] directories = {
-        Path.Combine(rootPath, "Folder1"),
-        Path.Combine(rootPath, "Folder2"),
-        Path.Combine(rootPath, "Folder3")
-    };
+            var status = await Permissions.RequestAsync<Permissions.StorageRead>();
 
-            string[] files = {
-        Path.Combine(directories[0], "file1.txt"),
-        Path.Combine(directories[0], "file2.txt"),
-        Path.Combine(directories[1], "file3.txt"),
-        Path.Combine(directories[2], "file4.txt")
-    };
-
-            foreach (var dir in directories)
+            if (status == PermissionStatus.Granted)
             {
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
+                LoadFolders(currentPath);
             }
-
-            foreach (var file in files)
+            else
             {
-                if (!File.Exists(file))
-                {
-                    File.WriteAllText(file, "This is a test file.");
-                }
+                await DisplayAlert("Permission Denied", "Unable to access storage. Please grant permission.", "OK");
             }
         }
 
-        private void OnSimulateButtonClick(object sender, EventArgs e)
+        private void LoadFolders(string path)
         {
-            // Simulate button click logic here
-            DisplayAlert("Button Click", "Simulate Button Clicked", "OK");
-        }
-
-        private async void OnOpenDeviceFolderClick(object sender, EventArgs e)
-        {
-            // Open device folder and read files
-            var folderPath = "/storage/emulated/0/Download"; // Example folder path
-            var files = await ReadFilesFromFolderAsync(folderPath);
-
-            if (files.Count == 0)
+            try
             {
-                files = GetMockFiles();
+                currentPath = path;
+                var folders = Directory.GetDirectories(path);
+                FolderListView.ItemsSource = folders.Select(f => f.Split('/').Last());
             }
-
-            DisplayAlert("Files in Folder", string.Join(", ", files), "OK");
-        }
-
-        private Task<List<string>> ReadFilesFromFolderAsync(string folderPath)
-        {
-            return Task.Run(() =>
+            catch (UnauthorizedAccessException)
             {
-                var fileList = new List<string>();
-                if (Directory.Exists(folderPath))
-                {
-                    var files = Directory.GetFiles(folderPath);
-                    fileList.AddRange(files);
-                }
-                return fileList;
-            });
+                DisplayAlert("Permission Denied", "Unable to access this folder.", "OK");
+                LoadFolders(Path.GetDirectoryName(path)); // Go back to parent directory
+            }
         }
 
-        private List<string> GetMockFiles()
+        private void OnFolderSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            // Return a list of mock files for testing
-            return new List<string>
+            var folderName = e.SelectedItem as string;
+            if (folderName != null)
             {
-                "file1.txt",
-                "file2.txt",
-                "file3.txt"
-            };
+                selectedFolder = Path.Combine(currentPath, folderName);
+                LoadFolders(selectedFolder); // Load the selected folder's content
+            }
         }
 
-        private void OnSendButtonClick(object sender, EventArgs e)
+        private async void OnOkButtonClick(object sender, EventArgs e)
         {
-            string inputText = TextInput.Text;
-            DisplayAlert("You Typed:", inputText, "OK");
+            if (!string.IsNullOrEmpty(selectedFolder))
+            {
+                var files = Directory.GetFiles(selectedFolder);
+                await DisplayAlert("Files in Folder", string.Join(", ", files.Select(f => f.Split('/').Last())), "OK");
+            }
         }
 
-        private async void OnOpenDeviceFoldersClick(object sender, EventArgs e)
+        private void OnCancelButtonClick(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new FolderSelectionPage());
+            // Clear the selection and reset the folder list if needed
+            selectedFolder = null;
+            LoadFolders(currentPath);
+        }
+
+        private void OnReturnButtonClick(object sender, EventArgs e)
+        {
+            // Navigate to the parent directory
+            var parentDirectory = Path.GetDirectoryName(currentPath);
+            if (!string.IsNullOrEmpty(parentDirectory))
+            {
+                LoadFolders(parentDirectory);
+            }
+        }
+
+        // New Feature: Simulate Button Click
+        private async void OnSimulateButtonClick(object sender, EventArgs e)
+        {
+            await DisplayAlert("Button Clicked", "You have clicked the button!", "OK");
+        }
+
+        // New Feature: Handle Text Input and Send Button Click
+        private async void OnSendButtonClick(object sender, EventArgs e)
+        {
+            string userInput = TextInput.Text;
+            if (!string.IsNullOrEmpty(userInput))
+            {
+                await DisplayAlert("You Typed", $"You typed: {userInput}", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Empty Input", "Please type something before sending.", "OK");
+            }
         }
     }
 }

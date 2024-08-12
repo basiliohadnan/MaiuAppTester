@@ -3,16 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppTester.MainPage">
 
-    <StackLayout Padding="30">
+    <StackLayout Padding="10">
 
-        <!-- Existing Buttons -->
-        <Button Text="Simulate Button Click" Clicked="OnSimulateButtonClick"/>
-        <Button Text="Open Device Folder" Clicked="OnOpenDeviceFolderClick"/>
+        <!-- Simulate Button Click Section -->
+        <Label Text="Simulate Button Click" FontAttributes="Bold" FontSize="Medium" />
+        <Button Text="Click Me" Clicked="OnSimulateButtonClick"/>
 
-        <!-- Text Input and Send Button -->
-        <StackLayout Orientation="Horizontal" Margin="0,20,0,0">
-            <Entry x:Name="TextInput" Placeholder="Type something..." HorizontalOptions="FillAndExpand"/>
+        <!-- Text Input with Send Button Section -->
+        <Label Text="Enter Text and Send" FontAttributes="Bold" FontSize="Medium" Margin="0,20,0,0"/>
+        <StackLayout Orientation="Horizontal">
+            <Entry x:Name="TextInput" Placeholder="Type something..." WidthRequest="250"/>
             <Button Text="Send" Clicked="OnSendButtonClick"/>
+        </StackLayout>
+
+        <!-- Folder Selection Section -->
+        <Label Text="Select a Folder" FontAttributes="Bold" FontSize="Medium" Margin="0,20,0,0"/>
+
+        <Button Text="Return to Parent Folder" Clicked="OnReturnButtonClick" />
+
+        <ListView x:Name="FolderListView" ItemSelected="OnFolderSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackLayout Orientation="Horizontal" Margin="0,20,0,0" HorizontalOptions="CenterAndExpand">
+            <Button Text="OK" Clicked="OnOkButtonClick"/>
+            <Button Text="Cancel" Clicked="OnCancelButtonClick"/>
         </StackLayout>
 
     </StackLayout>
